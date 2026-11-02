@@ -23,7 +23,7 @@ export const store = {
       "id": "premium-colorblock-cable-knit-sweater",
       "title": "🧶 Premium Colorblock Cable Knit Sweater",
       "category": "sweaters",
-      "price": 249,
+      "price": 1,
       "mrp": 1999,
       "stock": 10,
       "featured": true,
