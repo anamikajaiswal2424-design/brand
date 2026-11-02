@@ -7,28 +7,7 @@ export const store = {
     "freeShippingAbove": 999,
     "supportEmail": "support@example.com"
   },
-  "categories": [
-    {
-      "id": "tees",
-      "name": "T-Shirts",
-      "image": "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=900&q=85"
-    },
-    {
-      "id": "shirts",
-      "name": "Shirts",
-      "image": "https://images.unsplash.com/photo-1598032895397-b9472444bf93?w=900&q=85"
-    },
-    {
-      "id": "hoodies",
-      "name": "Hoodies",
-      "image": "https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=900&q=85"
-    },
-    {
-      "id": "joggers",
-      "name": "Joggers",
-      "image": "https://images.unsplash.com/photo-1552902865-b72c031ac5ea?w=900&q=85"
-    }
-  ],
+  "categories": [],
   "banners": [
     {
       "id": "main",
