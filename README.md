@@ -1,36 +1,39 @@
-# NORTHLINE — Next.js commerce starter
+# NORTHLINE store
 
-A modern responsive catalog, collection, product details, cart, order summary, COD checkout, confirmation page, and a password-protected admin panel. All products, categories, banners and settings live in **`data/store.js`**; orders live in **`data/orders.json`**. No database required. Product photos are demo external URLs: replace them with your own licensed product images.
+Next.js storefront with products, cart, address, order summary, UPI payment options and protected admin.
 
-## Quick start
+## Run
 
-```bash
-npm install
-cp .env.example .env.local
-npm run dev
-```
+Use Node 20 or newer. Run `npm ci`, copy `.env.example` to `.env.local`, then `npm run dev`. Production build: `npm run build`. Order validation tests: `node --test tests/upi-order.test.mjs`.
 
-Open http://localhost:3000 and http://localhost:3000/admin. Add the environment variables below to `.env.local`. Deploy this repository to Vercel and add the exact same environment variables in Vercel Project Settings.
+## Vercel environment variables
 
-## The important Vercel storage detail
+Keep the existing ADMIN_PASSWORD (12+ characters), SESSION_SECRET (32+ characters), GITHUB_TOKEN, GITHUB_OWNER, GITHUB_REPO and GITHUB_BRANCH settings. The GitHub token needs Contents read/write access to this repository only. Never expose it with NEXT_PUBLIC_.
 
-Vercel function files are **read-only / ephemeral** at runtime: `fs.writeFile('data/store.js', ...)` does not permanently save content. Admin saves through a **GitHub fine-grained token** with only **Contents: Read and write** access to this specific repository, using the GitHub Contents API. Each save commits the new JS file to the connected GitHub repository. Vercel automatically deploys the commit; runtime reads the latest source via the GitHub API. Orders are similarly committed as JSON.
+Add these values to Production and Preview, then redeploy:
 
-Environment variables (server-only, **never** prefix with NEXT_PUBLIC_):
-- `ADMIN_PASSWORD`: unique password of 12+ characters
-- `SESSION_SECRET`: random secret of 32+ characters
-- `GITHUB_TOKEN`: fine-grained GitHub PAT scoped to this repository with Contents read/write
-- `GITHUB_OWNER`: username/organisation
-- `GITHUB_REPO`: repository name
-- `GITHUB_BRANCH`: deployment branch, normally `main`
+| Variable | Value |
+|---|---|
+| PAYMENT_UPI_ID | Your receiving UPI ID |
+| PAYMENT_PAYEE_NAME | Name customers should see as the recipient |
+| META_PIXEL_ID | Optional numeric Meta/Facebook Pixel ID |
 
-**Do not commit `.env.local` or real secrets to GitHub.** Keep the GitHub repo private: orders contain personal information. Use custom production media URLs from your own image CDN; the admin currently stores image URLs, not binary image uploads. The store's public pages will show demo content without GitHub configuration, but saving products or orders requires configured GitHub access.
+No Meta access token or UPI PIN is needed. The payee details and Pixel ID are public configuration; GitHub tokens and admin/session secrets stay server-side. No real credentials are included in the source.
 
-## Limitations and production checks
+## Shopping and payment flow
 
-- Checkout currently supports **Cash on Delivery only**. No real UPI/Paytm/Cashfree payment gateway is integrated; payment tracking is intentionally not implemented.
-- This is a deployable starter, **not a hardened high-volume commerce backend**. GitHub-as-order-storage is low-volume only; concurrent writes may conflict, and it does not reserve inventory. For substantial orders, use a real transactional backend/hosted checkout or database.
-- Admin login uses a signed HttpOnly SameSite Strict cookie. Add production rate limiting/WAF, admin 2FA or managed authentication, audit logs and stronger schema validation before accepting significant traffic.
-- Do not use real customer data until you have established privacy, retention and access policies. The admin orders list contains personal information and the GitHub repo must be restricted.
-- Add order notification handling, transaction and stock reconciliation, policy pages (reflecting your actual business practices), and a real image upload/storage service before public launch.
-- Category tiles, images and editorial copy are original demo templates, not Nobero materials.
+Home → product → address → order summary → payment. Add to Cart and Buy Now both add the chosen variant and open the address step. The cart remains available from the header. Address details are kept in sessionStorage for the current browser tab, and sent to the server when preparing payment.
+
+The payment endpoint validates products, sizes, colours, stock and delivery details; it calculates totals from the server catalog, then saves an order with Pending verification status before returning UPI links and a locally generated QR. The request ID prevents a normal retry from creating another order. A changed bag/address creates a new request; an existing request cannot silently change the order.
+
+PhonePe and Paytm use Android app-targeted UPI intents. Other devices use the generic UPI chooser and QR fallback. Actual app support depends on the browser, installed app and receiving UPI account. Test with your real payee account before accepting customer payments. The website does not receive an authenticated bank/payment status from direct UPI links. Opening an app, returning to the site or scanning a QR never marks an order paid. The store must verify the payment against its receiving account manually. Automatic payment verification requires a payment gateway and authenticated server callbacks.
+
+## Meta Pixel
+
+The Pixel loads only after the shopper chooses Allow analytics. Events: PageView, AddToCart, InitiateCheckout and AddPaymentInfo. Customer names, phone numbers and addresses are not passed to Pixel events. Purchase is deliberately not fired for unverified UPI activity. Use Meta Test Events and the Pixel Helper after configuring your own Pixel ID.
+
+## Storage and admin
+
+Products/settings: data/store.js. Orders: data/orders.json. Admin: /admin. Vercel filesystem changes are ephemeral; the admin and checkout persist through GitHub commits. Keep the repository private because orders contain customer information. GitHub JSON storage is intended for low-volume use; it does not reserve inventory or provide transactional storage under concurrent orders. Add rate limiting and use a transactional order service for substantial traffic.
+
+The catalog is a one-time product import; Shopify stock and prices do not sync automatically. Review stock in the admin. A public feed exposes availability rather than exact inventory, so imported stock was set to a local purchase cap of 10 per product.
