@@ -11,11 +11,12 @@ export const store = {
   "banners": [
     {
       "id": "main",
-      "eyebrow": "THE NEW SEASON / 2026",
-      "title": "Made for the moments in between.",
-      "subtitle": "Essential fits. Elevated comfort. Style that follows you everywhere.",
-      "image": "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=1800&q=90",
-      "button": "Explore collection"
+      "eyebrow": "THE WINTER JACKET EDIT",
+      "title": "Layer up.\nStand out.",
+      "subtitle": "Warm layers. Effortless style. Discover your new everyday winter jacket.",
+      "button": "SHOP JACKETS",
+      "image": "https://cdn.shopify.com/s/files/1/1038/5073/7956/files/imgi_188_download_96_f1919998-39b6-4b49-8e47-34a50d575436.png?v=1793373456",
+      "productId": "premium-beige-brown-puffer-jacket"
     }
   ],
   "products": [
