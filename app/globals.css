@@ -140,3 +140,25 @@
  .jacket-hero h1{font-size:25px}
  .jacket-hero p{font-size:8px}
 }
+
+/* Three-jacket premium collection campaign */
+.premium-campaign{height:auto;min-height:0;padding:30px 24px 24px;background:radial-gradient(ellipse at 50% 45%,#faf7ef 0%,#e6e2d4 85%);color:#243b2e;text-align:center}
+.premium-campaign h1{font-family:Georgia,serif;font-weight:400;font-size:44px;letter-spacing:-.035em;line-height:1.15;margin:0 0 15px}
+.premium-jacket-stage{display:flex;align-items:center;justify-content:center;height:380px;max-width:1000px;margin:0 auto}
+.premium-jacket-stage button{width:33.333%;height:100%;padding:16px 0;border:0;background:transparent;min-width:0}
+.premium-jacket-stage img{width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply;transition:transform .25s ease}
+.premium-jacket-stage button:first-child img{transform:rotate(-7deg) scale(.94)}
+.premium-jacket-stage button:nth-child(2){z-index:1}
+.premium-jacket-stage button:nth-child(2) img{transform:scale(1.1)}
+.premium-jacket-stage button:last-child img{transform:rotate(7deg) scale(.94)}
+.premium-jacket-stage button:focus-visible{outline:2px solid #42654c;border-radius:12px}
+@media(max-width:800px){
+ .premium-campaign{padding:20px 10px 14px}
+ .premium-campaign h1{font-size:27px;margin:0 0 9px}
+ .premium-jacket-stage{height:195px;max-width:520px}
+ .premium-jacket-stage button{padding:0;width:34%}
+ .premium-jacket-stage button:nth-child(2) img{transform:scale(1.15)}
+}
+@media(max-width:360px){.premium-campaign h1{font-size:24px}.premium-jacket-stage{height:175px}}
+
+.premium-jacket-stage{padding-left:8px;padding-right:8px}.premium-jacket-stage button:nth-child(2){z-index:auto}
