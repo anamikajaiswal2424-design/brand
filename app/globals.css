@@ -162,3 +162,11 @@
 @media(max-width:360px){.premium-campaign h1{font-size:24px}.premium-jacket-stage{height:175px}}
 
 .premium-jacket-stage{padding-left:8px;padding-right:8px}.premium-jacket-stage button:nth-child(2){z-index:auto}
+
+/* Full-width art-directed winter campaign */
+.editorial-campaign{height:auto;min-height:0;background:#0c1912;overflow:hidden}
+.editorial-campaign>button{display:block;width:100%;max-width:1774px;padding:0;margin:0 auto}
+.editorial-campaign img{display:block;width:100%;height:auto;object-fit:contain}
+.editorial-campaign>button:focus-visible{outline:3px solid #e2c892;outline-offset:-3px}
+.campaign-sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+@media(max-width:800px){.editorial-campaign{height:auto;min-height:0}.editorial-campaign img{height:auto;object-fit:contain}}
