@@ -3,7 +3,7 @@ export const store = {
     "name": "NORTHLINE",
     "tagline": "Wear the everyday, exceptionally.",
     "announcement": "COMPLIMENTARY DELIVERY ON ORDERS ABOVE ₹999",
-    "shipping": 79,
+    "shipping": 0,
     "freeShippingAbove": 999,
     "supportEmail": "support@example.com"
   },
