@@ -24,7 +24,7 @@ test('pending order is stored before links return and retries use same record',a
  await assert.rejects(initiateVerifiedPayment({...payload,items:[{...payload.items[0],qty:2}]},{store,config,orders:f.orders}),/changed/);
 });
 test('query requires success, exact comment, exact decimal amount and unclaimed transaction',()=>{
- const q=transactionQuery({_id:'NL-ABC',total:328});assert.equal(q.status.$regex.test('SUCCESS'),true);assert.equal(q.status.$regex.test('FAILED'),false);assert.equal(q.$and[0].$or[0].comment.test('NL-ABC'),true);assert.equal(q.$and[0].$or[0].comment.test('xxNL-ABC'),false);assert.equal(q.$expr.$eq[1].toString(),'328.00');assert.equal(q.$and[1].$or[2].verifiedOrderId,'nl-abc');assert.equal(q.$expr.$eq[0].$convert.to,'decimal');
+ const q=transactionQuery({_id:'NL-ABC',total:328});assert.equal(q.status.$regex.test('SUCCESS'),true);assert.equal(q.status.$regex.test('FAILED'),false);assert.equal(q.$and[0].$or[0].comment.test('NL-ABC'),true);assert.equal(q.$and[0].$or[0].comment.test('xxNL-ABC'),false);assert.equal(q.$expr.$eq[1],32800);assert.equal(q.$and[1].$or[2].verifiedOrderId.test('nl-abc'),true);assert.equal(q.$expr.$eq[0].$round[0].$multiply[0].$convert.to,'double');
 });
 test('unauthorized, pending, ambiguous and race-lost records never confirm',async()=>{
  const f=fixture();const p=await initiateVerifiedPayment(payload,{store,config,orders:f.orders});
