@@ -34,3 +34,8 @@ Environment variables (server-only, **never** prefix with NEXT_PUBLIC_):
 - Do not use real customer data until you have established privacy, retention and access policies. The admin orders list contains personal information and the GitHub repo must be restricted.
 - Add order notification handling, transaction and stock reconciliation, policy pages (reflecting your actual business practices), and a real image upload/storage service before public launch.
 - Category tiles, images and editorial copy are original demo templates, not Nobero materials.
+
+## Imported winter catalog
+
+34 products were imported from Winteraura's public Shopify catalog, including prices in INR, descriptions, 168 image URLs and all 990 size/colour combinations. This is a one-time catalog snapshot, not a live Shopify inventory integration. The public feed exposes availability, not inventory quantities; imported products use a local order cap of 10. Review actual stock in the admin before accepting orders. Existing demo products are retained.
+
