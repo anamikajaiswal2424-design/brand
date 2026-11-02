@@ -25,3 +25,40 @@
 @media(max-width:800px){.product-grid{gap:14px}.product-card{border-radius:14px}.product-card .product-caption{padding:13px}.product-card .photo img{padding:28px 12px 14px}.product-card .badge-product{font-size:7px;padding:6px 8px;top:9px;left:9px}}
 @media(max-width:480px){.product-card .photo{aspect-ratio:.85}.product-card .card-name{font-size:12px;min-height:56px;margin-bottom:8px}.product-card .price{gap:5px}.product-card .off{font-size:8px;padding:3px 4px}.product-card .view-product{font-size:8px;margin-top:12px}.product-card .badge-product{font-size:6px;letter-spacing:.06em}.product-card .product-caption{padding:11px}}
 @media(prefers-reduced-motion:reduce){.product-card,.product-card .photo img{transition:none}.product-card:hover,.product-card:hover .photo img{transform:none}}
+
+/* Responsive product gallery */
+.detail-grid{grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr)}
+.detail-grid>*{min-width:0}
+.main-image{border-radius:18px;background:radial-gradient(ellipse at center,#fffdf7,#e9e3d7)}
+.main-image img{object-fit:contain;padding:20px;mix-blend-mode:multiply}
+.thumbs{max-width:100%;overflow-x:auto;padding:3px;scroll-snap-type:x proximity}
+.thumbs button{flex:0 0 72px;height:82px;border-radius:8px;overflow:hidden;scroll-snap-align:start}
+.thumbs img{object-fit:contain}
+.detail-info h1,.breadcrumb{overflow-wrap:anywhere}
+@media(max-width:800px){
+ .detail-grid{grid-template-columns:minmax(0,1fr);gap:24px}
+ .detail.section{padding-top:22px;padding-bottom:40px}
+ .breadcrumb{font-size:11px;line-height:1.7;margin-bottom:18px}
+ .main-image{aspect-ratio:1;height:auto;max-height:440px}
+ .main-image img{padding:18px}
+ .detail-info{padding-top:0}
+ .detail-info h1{font-size:29px;line-height:1.22;margin:12px 0}
+ .detail-price{gap:10px;flex-wrap:wrap}
+ .detail-price strong{font-size:25px}
+ .description{font-size:13px;padding:16px 0;margin-top:18px}
+ .choice-title{margin:20px 0 10px}
+ .choices{gap:8px}
+ .choices button{min-width:44px;min-height:44px;padding:10px;border-radius:6px}
+ .product-buttons{gap:10px;margin-top:20px}
+ .product-buttons .btn{min-width:0;min-height:48px;padding:13px 8px;font-size:10px;gap:7px;border-radius:6px}
+ .product-benefits{margin-top:24px;padding-top:18px;gap:13px;font-size:12px}
+ .detail .section{padding-left:0;padding-right:0}
+}
+@media(max-width:480px){
+ .detail.container{padding-left:16px;padding-right:16px}
+ .main-image{max-height:370px}
+ .thumbs{gap:9px;margin-top:10px}
+ .thumbs button{flex-basis:58px;height:66px}
+ .detail-info h1{font-size:26px}
+ .product-buttons .btn svg{width:16px;flex-shrink:0}
+}
