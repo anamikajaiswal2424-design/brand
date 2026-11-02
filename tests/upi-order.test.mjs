@@ -1,10 +1,17 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {paymentConfig,quoteOrder,prepareUpiOrder} from '../lib/upi-order.js';
+import {paymentConfig,quoteOrder,prepareUpiOrder,buildUpiPayment} from '../lib/upi-order.js';
 const store={settings:{shipping:79,freeShippingAbove:999},products:[{id:'tee',title:'Tee',price:249,stock:4,sizes:['S','M'],colors:['Black']}]};
 const items=[{id:'tee',qty:1,size:'S',color:'Black'}];
 const payload={requestId:'12345678-1234-1234-1234-123456789abc',items,total:1,customer:{name:'Test Buyer',phone:'9999999999',address:'Test street',city:'Test city',state:'Test state',pincode:'123456'}};
 const config=paymentConfig({PAYMENT_UPI_ID:'test@upi',PAYMENT_PAYEE_NAME:'Test Store'});
+test('direct payment needs no address or order storage and keeps a stable reference',()=>{
+ const a=buildUpiPayment({items,requestId:payload.requestId},{store,config});
+ const b=buildUpiPayment({items,requestId:payload.requestId},{store,config});
+ assert.equal(a.id,b.id);assert.equal(a.total,328);assert.equal(a.status,'Not verified');
+ assert.equal(new URL(a.upiUrl).searchParams.get('am'),'328.00');
+ assert.throws(()=>buildUpiPayment({items:[{...items[0],qty:-1}],requestId:payload.requestId},{store,config}),/product|option/);
+});
 test('server calculates payable amount, ignoring client-supplied total',async()=>{
  let saved;const r=await prepareUpiOrder(payload,{store,orders:[],config,save:async v=>saved=v});
  assert.equal(r.total,328);assert.equal(new URL(r.upiUrl).searchParams.get('am'),'328.00');assert.equal(saved[0].paymentStatus,'Pending verification');assert.equal(saved[0].paymentMethod,'UPI');assert.ok(r.phonepeUrl.includes('package=com.phonepe.app'));assert.ok(!r.upiUrl.includes(payload.customer.phone));

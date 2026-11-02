@@ -22,9 +22,9 @@ No Meta access token or UPI PIN is needed. The payee details and Pixel ID are pu
 
 ## Shopping and payment flow
 
-Home → product → address → order summary → payment. Add to Cart and Buy Now both add the chosen variant and open the address step. The cart remains available from the header. Address details are kept in sessionStorage for the current browser tab, and sent to the server when preparing payment.
+Home → product → address → order summary → payment. Add to Cart and Buy Now both add the chosen variant and open the address step. The cart remains available from the header. Address details are kept in sessionStorage for the current browser tab, and are retained locally for review.
 
-The payment endpoint validates products, sizes, colours, stock and delivery details; it calculates totals from the server catalog, then saves an order with Pending verification status before returning UPI links and a locally generated QR. The request ID prevents a normal retry from creating another order. A changed bag/address creates a new request; an existing request cannot silently change the order.
+Continue to Payment opens the payment page immediately. UPI links and QR are then prepared independently of GitHub order writes. The server validates the selected products and calculates the payable amount from the catalog. No order is persisted by this direct payment flow; the payment reference is not proof of a saved or paid order. Address details are not sent to the payment endpoint. 
 
 PhonePe and Paytm use Android app-targeted UPI intents. Other devices use the generic UPI chooser and QR fallback. Actual app support depends on the browser, installed app and receiving UPI account. Test with your real payee account before accepting customer payments. The website does not receive an authenticated bank/payment status from direct UPI links. Opening an app, returning to the site or scanning a QR never marks an order paid. The store must verify the payment against its receiving account manually. Automatic payment verification requires a payment gateway and authenticated server callbacks.
 

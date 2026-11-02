@@ -1,6 +1,6 @@
 import {NextResponse} from 'next/server';
-import {readStore,readOrders,writeFile} from '../../../lib/github';
-import {paymentConfig,prepareUpiOrder} from '../../../lib/upi-order';
+import {readStore} from '../../../lib/github';
+import {paymentConfig,buildUpiPayment} from '../../../lib/upi-order';
 import QRCode from 'qrcode';
 export const dynamic='force-dynamic';
 export async function POST(req){
@@ -12,10 +12,10 @@ export async function POST(req){
  try{
   const config=paymentConfig();
   if(!config.enabled)return NextResponse.json({error:'UPI payments are not configured. Please contact the store.'},{status:503,headers});
-  const result=await prepareUpiOrder(payload,{store:await readStore(),orders:await readOrders(),config,save:orders=>writeFile('data/orders.json',JSON.stringify(orders,null,2)+'\n','Create pending UPI order')});
+  const result=buildUpiPayment(payload,{store:await readStore(),config});
   return NextResponse.json({...result,qr:await QRCode.toDataURL(result.upiUrl,{width:280,margin:2,errorCorrectionLevel:'M'})},{headers});
  }catch(e){
   const expected=/bag|product|option|stock|payable|delivery|request|changed|processed|configured/i.test(e.message);
-  return NextResponse.json({error:expected?e.message:'Could not save your order. Please try again.'},{status:expected?400:503,headers});
+  return NextResponse.json({error:expected?e.message:'Could not prepare payment. Please try again.'},{status:expected?400:503,headers});
  }
 }
