@@ -1,6 +1,7 @@
 import {NextResponse} from 'next/server';
 import {readStore} from '../../../lib/github';
-import {paymentConfig,buildUpiPayment} from '../../../lib/upi-order';
+import {paymentConfig} from '../../../lib/upi-order';
+import {paymentCollections,initiateVerifiedPayment} from '../../../lib/payment-database';
 import QRCode from 'qrcode';
 export const dynamic='force-dynamic';
 export async function POST(req){
@@ -12,10 +13,11 @@ export async function POST(req){
  try{
   const config=paymentConfig();
   if(!config.enabled)return NextResponse.json({error:'UPI payments are not configured. Please contact the store.'},{status:503,headers});
-  const result=buildUpiPayment(payload,{store:await readStore(),config});
+  const {orders}=await paymentCollections();
+  const result=await initiateVerifiedPayment(payload,{store:await readStore(),config,orders});
   return NextResponse.json({...result,qr:await QRCode.toDataURL(result.upiUrl,{width:280,margin:2,errorCorrectionLevel:'M'})},{headers});
  }catch(e){
   const expected=/bag|product|option|stock|payable|delivery|request|changed|processed|configured/i.test(e.message);
-  return NextResponse.json({error:expected?e.message:'Could not prepare payment. Please try again.'},{status:expected?400:503,headers});
+  return NextResponse.json({error:expected?e.message:'Could not prepare a verified payment session. Please contact the store.'},{status:expected?400:503,headers});
  }
 }

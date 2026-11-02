@@ -1,13 +1,20 @@
 'use client';
 import {useEffect,useState} from 'react';
-export function track(name,data={}){if(typeof window!=='undefined'&&window.fbq)window.fbq('track',name,data);}
+export function trackPurchase(receipt){
+ if(typeof window==='undefined'||location.pathname!=='/thank-you'||!window.fbq||receipt?.status!=='success'||!receipt.verifiedAt)return;
+ const key='nl_purchase_'+receipt.id;
+ if(window.__nlPurchaseSent?.has(key))return;
+ try{if(localStorage.getItem(key))return}catch{}
+ window.fbq('track','Purchase',{value:receipt.total,currency:'INR',content_ids:receipt.items.map(x=>x.id),content_type:'product',num_items:receipt.items.reduce((n,x)=>n+x.qty,0)},{eventID:receipt.id});
+ (window.__nlPurchaseSent??=new Set()).add(key);try{localStorage.setItem(key,'sent')}catch{}
+}
 export default function Analytics(){
  const [pixel,setPixel]=useState(null),[choice,setChoice]=useState('loading');
  useEffect(()=>{try{setChoice(localStorage.getItem('nl_analytics')||'')}catch{setChoice('denied')}fetch('/api/payment-config').then(r=>r.json()).then(x=>setPixel(x.pixelId)).catch(()=>{});},[]);
  useEffect(()=>{
   if(choice!=='allowed'||!pixel)return;
-  if(!window.fbq){const q=function(){q.callMethod?q.callMethod.apply(q,arguments):q.queue.push(arguments)};q.queue=[];q.loaded=true;q.version='2.0';window.fbq=q;const script=document.createElement('script');script.async=true;script.src='https://connect.facebook.net/en_US/fbevents.js';document.head.appendChild(script);q('init',pixel);}
-  const page=()=>track('PageView');page();window.addEventListener('nl:navigate',page);return()=>window.removeEventListener('nl:navigate',page);
+  if(!window.fbq){const q=function(){q.callMethod?q.callMethod.apply(q,arguments):q.queue.push(arguments)};q.queue=[];q.loaded=true;q.version='2.0';window.fbq=q;const script=document.createElement('script');script.async=true;script.src='https://connect.facebook.net/en_US/fbevents.js';document.head.appendChild(script);q('set','autoConfig',false,pixel);q('init',pixel);}
+  const page=()=>{const url=location.href;if(window.__nlPixelPage!==url){window.__nlPixelPage=url;window.fbq('track','PageView')}};page();window.dispatchEvent(new Event('nl:analytics-ready'));window.addEventListener('nl:navigate',page);window.addEventListener('popstate',page);return()=>{window.removeEventListener('nl:navigate',page);window.removeEventListener('popstate',page)};
  },[choice,pixel]);
  const choose=value=>{try{localStorage.setItem('nl_analytics',value)}catch{}setChoice(value)};
  if(!pixel||choice)return null;
