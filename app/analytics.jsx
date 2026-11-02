@@ -1,5 +1,6 @@
 'use client';
 import {useEffect,useState} from 'react';
+import {initializeMetaPixel} from '../lib/meta-pixel';
 export function trackPurchase(receipt){
  if(typeof window==='undefined'||location.pathname!=='/thank-you'||!window.fbq||receipt?.status!=='success'||!receipt.verifiedAt)return;
  const key='nl_purchase_'+receipt.id;
@@ -13,7 +14,7 @@ export default function Analytics(){
  useEffect(()=>{try{setChoice(localStorage.getItem('nl_analytics')||'')}catch{setChoice('denied')}fetch('/api/payment-config').then(r=>r.json()).then(x=>setPixel(x.pixelId)).catch(()=>{});},[]);
  useEffect(()=>{
   if(choice!=='allowed'||!pixel)return;
-  if(!window.fbq){const q=function(){q.callMethod?q.callMethod.apply(q,arguments):q.queue.push(arguments)};q.queue=[];q.loaded=true;q.version='2.0';window.fbq=q;const script=document.createElement('script');script.async=true;script.src='https://connect.facebook.net/en_US/fbevents.js';document.head.appendChild(script);q('set','autoConfig',false,pixel);q('init',pixel);}
+  initializeMetaPixel(pixel);
   const page=()=>{const url=location.href;if(window.__nlPixelPage!==url){window.__nlPixelPage=url;window.fbq('track','PageView')}};page();window.dispatchEvent(new Event('nl:analytics-ready'));window.addEventListener('nl:navigate',page);window.addEventListener('popstate',page);return()=>{window.removeEventListener('nl:navigate',page);window.removeEventListener('popstate',page)};
  },[choice,pixel]);
  const choose=value=>{try{localStorage.setItem('nl_analytics',value)}catch{}setChoice(value)};
